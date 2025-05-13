@@ -13,7 +13,7 @@ This SaaS application leverages **Optical Character Recognition (OCR)** and **La
 
 ## System Overview
 
-![System Diagram](https://github.com/your-username/your-repo/assets/flow-diagram.png)
+![System Diagram](https://github.com/brenimcode)
 
 The pipeline consists of:
 
@@ -24,6 +24,17 @@ The pipeline consists of:
 5. **Response Delivery:** FastAPI sends the formatted results back to the ReactJS interface for display.
 
 This architecture ensures **robust OCR**, **context-aware analysis**, and **scalable performance** through containerization.
+
+## Key Features:
+
+* **User Authentication with JWT (Bearer Token)**:
+  Secure login and registration system using JSON Web Tokens for protected routes and session management.
+
+* **Login & Registration Interface**:
+  Frontend interface for users to create an account and authenticate securely.
+
+* **AI Essay Correction Interface**:
+  A dedicated screen where users can upload images (photos of handwritten essays), which are processed through an OCR module (**Tesseract**) and evaluated by an AI model, returning an estimated score and feedback.
 
 ## Requirements
 
