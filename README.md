@@ -1,2 +1,61 @@
-# enem-redacao-ai
-AI Writer automatically corrects ENEM and college entrance exam essays, extracting text from images with Tesseract OCR and evaluating content with language models (LangChain + Gemini). Made with Python on the backend and ReactJS on the frontend.
+# Redator AI: ENEM Essay Correction
+
+This SaaS application leverages **Optical Character Recognition (OCR)** and **Large Language Models (LLMs)** to provide **automated, accurate, and insightful feedback** on ENEM and university entrance exam essays. By combining **Tesseract OCR** for text extraction and **LangChain** with **Gemini** for evaluation, it delivers a seamless correction pipeline.
+
+## Technologies Used
+
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python\&logoColor=white\&style=for-the-badge)
+![LangChain](https://img.shields.io/badge/LangChain-%23000000.svg?style=for-the-badge\&logo=langchain\&logoColor=white)
+![Gemini](https://img.shields.io/badge/google%20gemini-8E75B2?style=for-the-badge&logo=google%20gemini&logoColor=white)
+![Tesseract OCR](https://img.shields.io/badge/Tesseract_OCR-4B8BBE?style=for-the-badge\&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi\&logoColor=white\&style=for-the-badge)
+![ReactJS](https://img.shields.io/badge/React-20232A?logo=react\&logoColor=61DAFB\&style=for-the-badge)
+
+## System Overview
+
+![System Diagram](https://github.com/your-username/your-repo/assets/flow-diagram.png)
+
+The pipeline consists of:
+
+1. **Image Upload:** Students upload a photo of their essay via the ReactJS frontend.
+2. **Preprocessing & OCR:** FastAPI backend preprocesses the image (deskew, denoise, threshold) and extracts text using Tesseract OCR.
+3. **Text Evaluation:** Extracted text is fed into a LangChain pipeline that uses Gemini to assess grammar, coherence, and structure.
+4. **Feedback Generation:** Gemini returns structured feedback including scores, comments, and improvement tips.
+5. **Response Delivery:** FastAPI sends the formatted results back to the ReactJS interface for display.
+
+This architecture ensures **robust OCR**, **context-aware analysis**, and **scalable performance** through containerization.
+
+## Requirements
+
+* **Python** ≥ 3.10
+* **Node.js** ≥ 14
+
+## Installing Dependencies
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
+   ```
+2. Create and activate a virtual environment:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+   ```
+3. Install Python dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Install Node.js dependencies for the frontend:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run
+   ```
+
+* Backend: `http://localhost:8000`
+* Frontend: `http://localhost:3000`
