@@ -13,7 +13,7 @@ This SaaS application leverages **Optical Character Recognition (OCR)** and **La
 
 ## System Overview
 
-![System Diagram](https://github.com/brenimcode)
+![System Diagram](https://github.com/brenimcode/enem-redacao-ai/blob/main/fluxo2.png)
 
 The pipeline consists of:
 
