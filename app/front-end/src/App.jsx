@@ -5,6 +5,9 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard'; // Importando o Dashboard
 
+console.log(process.env.REACT_APP_USERPROFILE);
+console.log(process.env.REACT_APP_TEMP);
+
 // Componente para rotas protegidas
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('authToken');

@@ -5,7 +5,7 @@ from PIL import Image
 from fastapi import UploadFile
 
 # Configura o caminho do Tesseract no Windows
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'c:\Program Files\Tesseract-OCR\tesseract.exe'
 
 async def transcrever_imagem(file: UploadFile, pre_processor: str = "thresh") -> str:
     """
