@@ -46,8 +46,8 @@ This architecture ensures **robust OCR**, **context-aware analysis**, and **scal
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
+   git clone https://github.com/brenimcode/enem-redacao-ai.git
+   cd enem-redacao-ai
    ```
 2. Create and activate a virtual environment:
 
