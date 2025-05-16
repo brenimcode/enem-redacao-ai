@@ -1,6 +1,6 @@
 # Redator AI: ENEM Essay Correction
 
-This SaaS application leverages **Optical Character Recognition (OCR)** and **Large Language Models (LLMs)** to provide **automated, accurate, and insightful feedback** on ENEM and university entrance exam essays. By combining **Tesseract OCR** for text extraction and **LangChain** with **Gemini** for evaluation, it delivers a seamless correction pipeline.
+This application leverages **Optical Character Recognition (OCR)** and **Large Language Models (LLMs)** to provide **automated, accurate, and insightful feedback** on ENEM exam essays. By combining **Tesseract OCR** ​​for text extraction and **LangChain** with **Gemini** for evaluation, it delivers a seamless correction pipeline.
 
 ## Technologies Used
 
@@ -46,8 +46,8 @@ This architecture ensures **robust OCR**, **context-aware analysis**, and **scal
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
+   git clone https://github.com/brenimcode/enem-redacao-ai.git
+   cd enem-redacao-ai
    ```
 2. Create and activate a virtual environment:
 
