@@ -1,34 +1,74 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 import os
 from decouple import config
+from models.modelsClass import RedacaoResponse
+from langchain.output_parsers import PydanticOutputParser
+from langchain import LLMChain
+from typing import Any, Dict
+from langchain_core.prompts import PromptTemplate
 
 os.environ['GOOGLE_API_KEY'] = config('GOOGLE_API_KEY')
 
-async def analisar_texto(texto: str) -> str:
+# Montagem do prompt (system + human), com placeholders tema, textos_motivadores e texto
+prompt_template = """
+# Você é um corretor de redações do ENEM (Brasil). Sua tarefa é **primeiro** analisar o texto OCR inserido e corrigir erros de reconhecimento(OCR) para reconstruir a mensagem original com a maior fidelidade possível ao conteúdo e estilo do texto, sem adicionar, remover ou alterar o significado das palavras e frases originais. Sua **segunda** tarefa: avaliar o texto do candidato usando **exatamente** os critérios oficiais das 5 competências do ENEM e devolver **apenas** um JSON com esta estrutura:
+
+# **Template de saída**:
+{{
+  "description": "<comentário geral sucinto sobre pontos fortes e fracos da redação>",
+  "score": <nota total, de 0 a 1000>,
+  "competencies":[<nota competência 1>, <nota competência 2>, <nota competência 3>, <nota competência 4>, <nota competência 5>]
+}}
+
+# **Regras importantes:**
+1. **JSON puro**: não inclua texto explicativo fora do JSON.
+2. Use exatamente as 5 competências do ENEM, com pesos de 200 cada.
+3. Siga os critérios oficiais de cada competência.
+4. Some as notas para formar o score total (0–1000).
+
+Você receberá:
+- `tema`: o tema oficial.
+- `textos_motivadores`: textos de apoio.
+- `texto`: a redação do candidato.
+
+Retorne **somente** o JSON acima, nada mais.
+
+Tema da redação: {tema}
+
+Textos motivadores:
+{textos_motivadores}
+
+Texto da redação:
+{texto}
+
+"""
+
+# Cria um parser baseado no seu schema Pydantic
+parser = PydanticOutputParser(pydantic_object=RedacaoResponse)
+
+# -------------------------------------------------------------------
+async def analisar_texto(texto,tema,textos_motivadores):
     """
-    Recebe o texto transcrito e envia para o modelo Gemini 2.0 Flash,
-    retornando a correção/análise.
+    Recebe o texto da redação, envia ao Gemini 2.0 Flash e
+    retorna um dict conforme RedacaoResponse.
     """
-    # Inicializa o modelo Gemini 2.0 Flash
+
+    # 1️⃣ Configura o LLM
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         temperature=0.0,
-        max_tokens=2048,
+        max_tokens=10048,
         timeout=30,
         max_retries=2
-    )   
-    
-    # Define o prompt em estilo chat
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", "Você é um corretor de redações do ENEM(brasil) que avalia e sugere melhorias. Sua tarefa é sempre deixar a sua **resposta** no seguinte formato JSON também: {{\"description\": \"A redação apresenta uma boa argumentação, mas carece de maior aprofundamento em alguns pontos.\", \"score\": 850, \"competencies\": [{{\"label\": \"Competência 1\", \"score\": 180, \"maxScore\": 200}}, {{\"label\": \"Competência 2\", \"score\": 170, \"maxScore\": 200}}, {{\"label\": \"Competência 3\", \"score\": 160, \"maxScore\": 200}}, {{\"label\": \"Competência 4\", \"score\": 170, \"maxScore\": 200}}, {{\"label\": \"Competência 5\", \"score\": 170, \"maxScore\": 200}}]}}"),
-        ("human", "Corrija e avalie a seguinte redação:{texto}")
-    ])
-    
-    # Monta a cadeia com parser de saída para string
-    chain = prompt | llm | StrOutputParser()
+    )
 
-    # Executa a chain de forma assíncrona
-    resposta = await chain.ainvoke({"texto": texto})
-    return resposta
+    prompt = PromptTemplate(
+        template=prompt_template,
+        input_variables=["tema", "textos_motivadores","texto"],
+    )
+
+    # 2️⃣ Monta a chain com prompt e parser
+    chain = prompt | llm | parser
+
+    return chain.invoke({"tema": tema,"textos_motivadores":textos_motivadores,"texto": texto})

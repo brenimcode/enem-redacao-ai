@@ -12,6 +12,12 @@ async def fazer_correcao_redacao(file) -> dict:
     texto = await transcrever_imagem(file)
 
     # 2. Análise com LLM
-    resultado = await analisar_texto(texto)
+    tema = "Desafios para a valorização de comunidades e povos tradicionais no Brasil"
+    textos_motivadores = """Texto 1: Os povos tradicionais desempenham um papel fundamental na conservação da biodiversidade e na manutenção dos serviços ecossistêmicos.
+    Texto 2: A Constituição Federal reconhece os direitos dos povos indígenas às suas terras e culturas."""
+    
+    resultado = await analisar_texto(texto,tema, textos_motivadores)
 
-    return {"texto_original": texto, "correcao": resultado}
+    print(resultado)
+
+    return resultado

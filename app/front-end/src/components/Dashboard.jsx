@@ -75,7 +75,7 @@ const Dashboard = () => {
           "Authorization": `${tokenType.charAt(0).toUpperCase() + tokenType.slice(1)} ${token}`,
         },
         body: formData,
-      });
+      }); 
 
       console.log("Resposta recebida:", response);
 
@@ -219,51 +219,28 @@ const Dashboard = () => {
                 </div>
                 <div style={styles.scoreSection}>
                   <div style={styles.scoreCircle}>
-                    <span style={styles.scoreNumber}>800</span>
+                    <span style={styles.scoreNumber}>{score}</span>
                     <span style={styles.scoreTotal}>/1000</span>
                   </div>
                   <div style={styles.scoreCriteria}>
-                    <div style={styles.criteriaItem}>
-                      <span style={styles.criteriaLabel}>Competência 1</span>
-                      <div style={styles.criteriaBar}>
-                        <div style={{...styles.criteriaFill, width: '90%'}}></div>
+                    {competencies.map((competencyScore, index) => (
+                      <div key={index} style={styles.criteriaItem}>
+                        <span style={styles.criteriaLabel}>Competência {index + 1}</span>
+                        <div style={styles.criteriaBar}>
+                          <div
+                            style={{
+                              ...styles.criteriaFill,
+                              width: `${(competencyScore / 200) * 100}%`,
+                            }}
+                          ></div>
+                        </div>
+                        <span style={styles.criteriaScore}>{competencyScore}/200</span>
                       </div>
-                      <span style={styles.criteriaScore}>180/200</span>
-                    </div>
-                    <div style={styles.criteriaItem}>
-                      <span style={styles.criteriaLabel}>Competência 2</span>
-                      <div style={styles.criteriaBar}>
-                        <div style={{...styles.criteriaFill, width: '85%'}}></div>
-                      </div>
-                      <span style={styles.criteriaScore}>170/200</span>
-                    </div>
-                    <div style={styles.criteriaItem}>
-                      <span style={styles.criteriaLabel}>Competência 3</span>
-                      <div style={styles.criteriaBar}>
-                        <div style={{...styles.criteriaFill, width: '75%'}}></div>
-                      </div>
-                      <span style={styles.criteriaScore}>150/200</span>
-                    </div>
-                    <div style={styles.criteriaItem}>
-                      <span style={styles.criteriaLabel}>Competência 4</span>
-                      <div style={styles.criteriaBar}>
-                        <div style={{...styles.criteriaFill, width: '80%'}}></div>
-                      </div>
-                      <span style={styles.criteriaScore}>160/200</span>
-                    </div>
-                    <div style={styles.criteriaItem}>
-                      <span style={styles.criteriaLabel}>Competência 5</span>
-                      <div style={styles.criteriaBar}>
-                        <div style={{...styles.criteriaFill, width: '70%'}}></div>
-                      </div>
-                      <span style={styles.criteriaScore}>140/200</span>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
               <div style={styles.resultActions}>
-                <button style={styles.actionButton}>Baixar PDF</button>
-                <button style={styles.actionButton}>Compartilhar</button>
                 <button style={styles.actionButtonOutline} onClick={resetForm}>Nova correção</button>
               </div>
             </div>

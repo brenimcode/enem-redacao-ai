@@ -3,9 +3,44 @@ import numpy as np
 import pytesseract
 from PIL import Image
 from fastapi import UploadFile
+from decouple import config
+import os
+
+# Carrega o valor base do TESSDATA_PREFIX do .env
+tessdata_prefix = config("TESSDATA_PREFIX")
+
+# Define no ambiente
+os.environ["TESSDATA_PREFIX"] = tessdata_prefix
+
+# Caminho para usar no config do Tesseract
+tessdata_dir_config = f'--tessdata-dir "{tessdata_prefix}"'
 
 # Configura o caminho do Tesseract no Windows
 pytesseract.pytesseract.tesseract_cmd = r'c:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# Verificação dos arquivos necessários (diagnóstico)
+def verificar_tesseract():
+    tessdata_dir = tessdata_prefix
+    portuguese_data = os.path.join(tessdata_dir, 'por.traineddata')
+    
+    if not os.path.isfile(pytesseract.pytesseract.tesseract_cmd):
+        print(f"ERRO: Tesseract não encontrado em: {pytesseract.pytesseract.tesseract_cmd}")
+        return False
+        
+    if not os.path.isdir(tessdata_dir):
+        print(f"ERRO: Diretório tessdata não encontrado: {tessdata_dir}")
+        return False
+        
+    if not os.path.isfile(portuguese_data):
+        print(f"ERRO: Arquivo por.traineddata não encontrado em: {portuguese_data}")
+        return False
+        
+    print(f"Configuração do Tesseract OK. Usando arquivo: {portuguese_data}")
+    return True
+
+# Executar verificação na inicialização
+verificar_tesseract()
+
 
 async def transcrever_imagem(file: UploadFile, pre_processor: str = "thresh") -> str:
     """
@@ -15,21 +50,7 @@ async def transcrever_imagem(file: UploadFile, pre_processor: str = "thresh") ->
     - file: UploadFile contendo a imagem
     - pre_processor: método de pré-processamento ('thresh' ou 'blur')
     """
-
-    # Função para deskew (alinhar horizontalmente)
-    def deskew(image):
-        coords = np.column_stack(np.where(image > 0))
-        angle = cv2.minAreaRect(coords)[-1]
-        if angle < -45:
-            angle = -(90 + angle)
-        else:
-            angle = -angle
-
-        (h, w) = image.shape[:2]
-        M = cv2.getRotationMatrix2D((w // 2, h // 2), angle, 1.0)
-        rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
-        return rotated
-
+    
     # Lê os bytes da imagem enviada
     image_bytes = await file.read()
     image_np = np.frombuffer(image_bytes, np.uint8)
@@ -38,23 +59,8 @@ async def transcrever_imagem(file: UploadFile, pre_processor: str = "thresh") ->
     # Pré-processamento padrão: escala de cinza
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Aplicar pré-processamento selecionado
-    if pre_processor == "blur":
-        processed = cv2.medianBlur(gray, 3)
-    elif pre_processor == "thresh":
-        processed = cv2.adaptiveThreshold(
-            gray, 255,
-            cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-            cv2.THRESH_BINARY_INV, 25, 15
-        )
-    else:
-        processed = gray  # sem nenhum pré-processamento
-
-    # Deskew opcional (sempre aplicando)
-    processed = deskew(processed)
-
     # Converter para PIL para pytesseract
-    proc_pil = Image.fromarray(processed)
+    proc_pil = Image.fromarray(gray)
 
     # Realizar OCR
     text = pytesseract.image_to_string(proc_pil, lang='por', config='--psm 6')
