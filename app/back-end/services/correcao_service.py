@@ -1,7 +1,7 @@
 from .ocr_service import transcrever_imagem
 from .langchain_service import analisar_texto
 
-async def fazer_correcao_redacao(file) -> dict:
+async def fazer_correcao_redacao(file, tema: str, textos_motivadores: str) -> dict:
     """
     Função principal de correção de redação:
     1. Transcreve imagem para texto
@@ -12,12 +12,10 @@ async def fazer_correcao_redacao(file) -> dict:
     texto = await transcrever_imagem(file)
 
     # 2. Análise com LLM
-    tema = "Desafios para a valorização de comunidades e povos tradicionais no Brasil"
-    textos_motivadores = """Texto 1: Os povos tradicionais desempenham um papel fundamental na conservação da biodiversidade e na manutenção dos serviços ecossistêmicos.
-    Texto 2: A Constituição Federal reconhece os direitos dos povos indígenas às suas terras e culturas."""
-    
-    resultado = await analisar_texto(texto,tema, textos_motivadores)
+    resultado = await analisar_texto(texto, tema, textos_motivadores)
 
-    print(resultado)
+    print("\n\n\n============== ",texto, " ==============")
+    print("\n============== ",tema, " ==============")
+    print("\n============== ",textos_motivadores, " ==============\n\n")
 
     return resultado

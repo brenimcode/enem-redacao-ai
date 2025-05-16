@@ -1,5 +1,8 @@
 import { useState, DragEvent } from "react";
 import { Upload } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface UploadAreaProps {
   preview: string | null;
@@ -8,6 +11,10 @@ interface UploadAreaProps {
   handleSubmit: () => void;
   resetForm: () => void;
   loading: boolean;
+  tema: string;
+  setTema: (tema: string) => void;
+  textosMotivadores: string;
+  setTextosMotivadores: (textos: string) => void;
 }
 
 export const UploadArea = ({
@@ -17,6 +24,10 @@ export const UploadArea = ({
   handleSubmit,
   resetForm,
   loading,
+  tema,
+  setTema,
+  textosMotivadores,
+  setTextosMotivadores,
 }: UploadAreaProps) => {
   const [dragActive, setDragActive] = useState(false);
 
@@ -53,6 +64,30 @@ export const UploadArea = ({
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div className="mb-6 space-y-4">
+        <div>
+          <Label htmlFor="tema" className="text-gray-700">Tema da Redação</Label>
+          <Input 
+            id="tema" 
+            value={tema} 
+            onChange={(e) => setTema(e.target.value)} 
+            placeholder="Digite o tema da redação" 
+            className="mt-1"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="textos-motivadores" className="text-gray-700">Textos Motivadores</Label>
+          <Textarea 
+            id="textos-motivadores" 
+            value={textosMotivadores} 
+            onChange={(e) => setTextosMotivadores(e.target.value)} 
+            placeholder="Insira os textos motivadores relacionados ao tema" 
+            className="mt-1 min-h-[120px]"
+          />
+        </div>
+      </div>
+      
       <div 
         className={`
           border-2 border-dashed rounded-lg p-8 transition-all
@@ -110,7 +145,7 @@ export const UploadArea = ({
         <div className="mt-6 flex justify-center">
           <button
             onClick={handleSubmit}
-            disabled={loading}
+            disabled={loading || !tema.trim() || !textosMotivadores.trim()}
             className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-md transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
             Enviar para correção

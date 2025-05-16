@@ -26,6 +26,9 @@ const Dashboard = () => {
   const [score, setScore] = useState<number | null>(null);
   const [competencies, setCompetencies] = useState<number[]>([]);
   const [username, setUsername] = useState<string>("");
+  const [tema, setTema] = useState<string>("");
+  const [textosMotivadores, setTextosMotivadores] = useState<string>("");
+
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
@@ -57,11 +60,24 @@ const Dashboard = () => {
       return;
     }
 
+    if (!tema.trim()) {
+      toast.error("Por favor, informe o tema da redação.");
+      return;
+    }
+
+    if (!textosMotivadores.trim()) {
+      toast.error("Por favor, informe os textos motivadores.");
+      return;
+    }
+
     setLoading(true);
     
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
+      formData.append("tema", tema);
+      formData.append("textos_motivadores", textosMotivadores);
+
 
       const token = localStorage.getItem("authToken");
       const tokenType = localStorage.getItem("tokenType");
@@ -104,6 +120,8 @@ const Dashboard = () => {
     setDescription("");
     setScore(null);
     setCompetencies([]);
+    setTema("");
+    setTextosMotivadores("");
   };
 
   return (
@@ -161,6 +179,10 @@ const Dashboard = () => {
                 handleSubmit={handleSubmit} 
                 resetForm={resetForm}
                 loading={loading}
+                tema={tema}
+                setTema={setTema}
+                textosMotivadores={textosMotivadores}
+                setTextosMotivadores={setTextosMotivadores}
               />
             ) : (
               <CorrectionResults
