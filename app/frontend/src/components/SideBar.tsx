@@ -16,7 +16,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0">
+    <aside className="w-64 bg-white border-r border-gray-200 h-full sticky top-0">
       <div className="p-4 md:p-6 border-b border-gray-200 flex justify-between items-center">
         <h2 className="text-lg md:text-xl font-bold text-blue-600">Redator AI</h2>
         {/* Mobile close button */}

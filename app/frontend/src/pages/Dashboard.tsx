@@ -100,6 +100,7 @@ const Dashboard = () => {
       }
 
       const data: CorrectionData = await response.json();
+      
       const totalScore = data.competencies.reduce((sum, value) => sum + value, 0);
 
       setDescription(data.description);
@@ -189,7 +190,7 @@ const Dashboard = () => {
         
         <main className="p-4 md:p-8">
           {loading && (
-            <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-90">
               <div className="bg-white p-4 md:p-6 rounded-lg shadow-xl flex items-center gap-3 md:gap-4">
                 <Loader2 className="h-5 w-5 md:h-6 md:w-6 text-blue-600 animate-spin" />
                 <p className="text-base md:text-lg">Analisando sua redação...</p>

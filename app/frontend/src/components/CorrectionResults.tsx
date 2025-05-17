@@ -1,4 +1,5 @@
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, CirclePercent } from "lucide-react";
+import { useMemo } from "react";
 
 interface CorrectionResultsProps {
   description: string;
@@ -37,9 +38,36 @@ export const CorrectionResults = ({
     return "text-red-600";
   };
 
+  const getScoreColorFill = (totalScore: number) => {
+    if (totalScore >= 800) return "#16a34a"; // green-600
+    if (totalScore >= 600) return "#2563eb"; // blue-600
+    if (totalScore >= 400) return "#ca8a04"; // yellow-600
+    if (totalScore >= 200) return "#ea580c"; // orange-600
+    return "#dc2626"; // red-600
+  };
+
+  const scoreValue = score || 0;
+  const percentage = (scoreValue / 1000) * 100;
+  
+  // Calcular os parâmetros do círculo SVG
+  const circleSize = useMemo(() => {
+    return {
+      size: 140,       // Tamanho total do SVG
+      radius: 60,      // Raio do círculo
+      strokeWidth: 8,  // Largura do traço
+      center: 70       // Centro do círculo (size / 2)
+    };
+  }, []);
+
+  // Calculando o perímetro do círculo
+  const circumference = 2 * Math.PI * circleSize.radius;
+  
+  // Calculando quanto do círculo deve ser preenchido
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-4 md:p-6 border-b border-gray-200 flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+      <div className="p-4 md:p-6 border-b border-gray-200 flex flex-col md:flex-row md:justify-between md:items-center gap-2 text-center md:text-left">
         <h2 className="text-lg md:text-xl font-semibold text-gray-800">
           Resultado da Correção
         </h2>
@@ -50,33 +78,64 @@ export const CorrectionResults = ({
       
       <div className="p-4 md:p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-base md:text-lg font-medium text-gray-700 mb-3">
               Feedback da redação
             </h3>
-            <div className="bg-gray-50 p-3 md:p-4 rounded-md border border-gray-200 h-full">
+            <div className="bg-gray-50 p-3 md:p-4 rounded-md border border-gray-200">
               <p className="text-sm md:text-base text-gray-700 whitespace-pre-line">
                 {description}
               </p>
             </div>
           </div>
           
-          <div>
+          <div className="text-center md:text-left mt-5 md:mt-0">
             <h3 className="text-base md:text-lg font-medium text-gray-700 mb-3 md:mb-4">
               Pontuação
             </h3>
             
             <div className="mb-4 md:mb-6 flex items-center justify-center">
-              <div className="w-28 h-28 md:w-36 md:h-36 rounded-full border-6 md:border-8 border-gray-100 flex flex-col items-center justify-center">
-                <span className={`text-3xl md:text-4xl font-bold ${getScoreColor(score || 0)}`}>
-                  {score || 0}
-                </span>
-                <span className="text-xs md:text-sm text-gray-500">
-                  de 1000 pontos
-                </span>
+              <div className="relative w-32 h-32 md:w-36 md:h-36 flex items-center justify-center">
+                {/* Círculo SVG com preenchimento dinâmico */}
+                <svg width={circleSize.size} height={circleSize.size} viewBox={`0 0 ${circleSize.size} ${circleSize.size}`} className="absolute">
+                  {/* Círculo base (cinza) */}
+                  <circle 
+                    cx={circleSize.center} 
+                    cy={circleSize.center} 
+                    r={circleSize.radius} 
+                    fill="none" 
+                    stroke="#e5e7eb" 
+                    strokeWidth={circleSize.strokeWidth} 
+                  />
+                  
+                  {/* Círculo de progresso */}
+                  <circle 
+                    cx={circleSize.center} 
+                    cy={circleSize.center} 
+                    r={circleSize.radius} 
+                    fill="none" 
+                    stroke={getScoreColorFill(scoreValue)}
+                    strokeWidth={circleSize.strokeWidth}
+                    strokeDasharray={circumference} 
+                    strokeDashoffset={strokeDashoffset}
+                    transform={`rotate(-90 ${circleSize.center} ${circleSize.center})`}
+                    strokeLinecap="round"
+                    className="transition-all duration-1000 ease-out"
+                  />
+                </svg>
+                
+                {/* Texto do score no centro do círculo */}
+                <div className="z-10 flex flex-col items-center justify-center">
+                  <span className={`text-3xl md:text-4xl font-bold ${getScoreColor(scoreValue)}`}>
+                    {scoreValue}
+                  </span>
+                  <span className="text-xs md:text-sm text-gray-500">
+                    de 1000
+                  </span>
+                </div>
               </div>
             </div>
-            
+          
             <div className="space-y-3 md:space-y-4">
               {competencies.map((competencyScore, index) => (
                 <div key={index}>
