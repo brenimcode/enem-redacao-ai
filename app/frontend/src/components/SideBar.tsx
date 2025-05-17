@@ -1,7 +1,11 @@
-import { Pen, History, BookText, Settings, LogOut } from "lucide-react";
+import { Pen, History, BookText, Settings, LogOut, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export const Sidebar = ({ onClose }: SidebarProps) => {
   const navigate = useNavigate();
   
   const handleLogout = () => {
@@ -13,8 +17,15 @@ export const Sidebar = () => {
 
   return (
     <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-blue-600">Redator AI</h2>
+      <div className="p-4 md:p-6 border-b border-gray-200 flex justify-between items-center">
+        <h2 className="text-lg md:text-xl font-bold text-blue-600">Redator AI</h2>
+        {/* Mobile close button */}
+        <button 
+          className="text-gray-500 hover:text-gray-900 md:hidden" 
+          onClick={onClose}
+        >
+          <X className="h-5 w-5" />
+        </button>
       </div>
       
       <nav className="p-4">
@@ -30,7 +41,7 @@ export const Sidebar = () => {
           </li>
           <li>
             <a 
-              href="*" 
+              href="#" 
               className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg"
             >
               <History className="h-5 w-5" />
@@ -39,7 +50,7 @@ export const Sidebar = () => {
           </li>
           <li>
             <a 
-              href="*" 
+              href="#" 
               className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg"
             >
               <BookText className="h-5 w-5" />
@@ -48,7 +59,7 @@ export const Sidebar = () => {
           </li>
           <li>
             <a 
-              href="*" 
+              href="#" 
               className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-lg"
             >
               <Settings className="h-5 w-5" />

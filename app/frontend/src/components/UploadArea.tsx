@@ -63,8 +63,8 @@ export const UploadArea = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="mb-6 space-y-4">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+      <div className="mb-6 space-y-3 md:space-y-4">
         <div>
           <Label htmlFor="tema" className="text-gray-700">Tema da Redação</Label>
           <Input 
@@ -83,14 +83,14 @@ export const UploadArea = ({
             value={textosMotivadores} 
             onChange={(e) => setTextosMotivadores(e.target.value)} 
             placeholder="Insira os textos motivadores relacionados ao tema" 
-            className="mt-1 min-h-[120px]"
+            className="mt-1 min-h-[100px] md:min-h-[120px]"
           />
         </div>
       </div>
-      
+
       <div 
         className={`
-          border-2 border-dashed rounded-lg p-8 transition-all
+          border-2 border-dashed rounded-lg p-4 md:p-8 transition-all
           ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"} 
           ${preview ? "bg-gray-50" : ""}
         `}
@@ -101,12 +101,12 @@ export const UploadArea = ({
       >
         {!preview ? (
           <div className="flex flex-col items-center">
-            <Upload className="h-16 w-16 text-blue-500 mb-4" />
-            <p className="text-gray-700 text-lg font-medium mb-2">
+            <Upload className="h-12 w-12 md:h-16 md:w-16 text-blue-500 mb-3 md:mb-4" />
+            <p className="text-gray-700 text-base md:text-lg font-medium mb-2 text-center">
               Arraste a imagem da sua redação aqui
             </p>
-            <p className="text-gray-500 mb-4">ou</p>
-            <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md transition-colors">
+            <p className="text-gray-500 mb-3 md:mb-4">ou</p>
+            <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 md:px-6 rounded-md transition-colors">
               Selecione um arquivo
               <input
                 type="file"
@@ -115,7 +115,7 @@ export const UploadArea = ({
                 className="hidden"
               />
             </label>
-            <p className="text-gray-400 text-sm mt-4">
+            <p className="text-gray-400 text-xs md:text-sm mt-3 md:mt-4">
               Formatos aceitos: JPG, PNG, JPEG
             </p>
           </div>
@@ -124,10 +124,10 @@ export const UploadArea = ({
             <img 
               src={preview} 
               alt="Preview da redação" 
-              className="max-h-64 object-contain mb-4" 
+              className="max-h-48 md:max-h-64 object-contain mb-3 md:mb-4" 
             />
-            <div className="flex items-center gap-4">
-              <span className="text-gray-700 font-medium">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
+              <span className="text-gray-700 font-medium text-center md:text-left break-all max-w-full">
                 {selectedFile?.name}
               </span>
               <button
@@ -142,11 +142,11 @@ export const UploadArea = ({
       </div>
 
       {preview && (
-        <div className="mt-6 flex justify-center">
+        <div className="mt-4 md:mt-6 flex justify-center">
           <button
             onClick={handleSubmit}
             disabled={loading || !tema.trim() || !textosMotivadores.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-md transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 md:py-3 px-6 md:px-8 rounded-md transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed text-sm md:text-base"
           >
             Enviar para correção
           </button>

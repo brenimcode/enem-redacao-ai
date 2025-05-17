@@ -1,86 +1,115 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { FileImage, CheckCircle, MessageSquare } from "lucide-react";
 
-const Index: React.FC = () => {
+const Index = () => {
   return (
-    <div className="relative overflow-hidden min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-white flex items-center justify-center p-6">
-      {/* Adornos animados de partículas */}
+    <div className="relative overflow-hidden min-h-screen bg-gradient-to-br from-primary-50 via-primary-100/30 to-white flex flex-col items-center justify-center p-6">
+      {/* Elementos de fundo animados */}
       <motion.div
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent opacity-20"
-        animate={{ scale: [1, 1.02, 1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-300/30 via-transparent to-transparent opacity-20"
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.span
-        className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-50 shadow-lg"
-        style={{ top: '20%', left: '10%' }}
-        animate={{ y: [0, -20, 0], opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-      />
-      <motion.span
-        className="absolute w-3 h-3 bg-blue-500 rounded-full opacity-30 shadow-lg"
-        style={{ bottom: '15%', right: '20%' }}
-        animate={{ x: [0, 20, 0], opacity: [0.3, 0.8, 0.3] }}
-        transition={{ duration: 6, repeat: Infinity, delay: 2 }}
-      />
-      <motion.span
-        className="absolute w-4 h-4 bg-blue-600 rounded-full opacity-40 shadow-lg"
-        style={{ top: '10%', right: '15%' }}
-        animate={{ y: [0, 30, 0], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 5, repeat: Infinity, delay: 1.5 }}
-      />
-      <motion.span
-        className="absolute w-3 h-3 bg-blue-400 rounded-full opacity-50 shadow-lg"
-        style={{ bottom: '10%', left: '25%' }}
-        animate={{ x: [0, -25, 0], opacity: [0.5, 0.9, 0.5] }}
-        transition={{ duration: 7, repeat: Infinity, delay: 2 }}
-      />
-      <motion.span
-        className="absolute w-5 h-5 bg-blue-700 rounded-full opacity-30 shadow-lg"
-        style={{ top: '30%', left: '50%' }}
-        animate={{ y: [0, -40, 0], opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 6, repeat: Infinity, delay: 1 }}
-      />
-      <motion.span
-        className="absolute w-2 h-2 bg-blue-300 rounded-full opacity-60 shadow-lg"
-        style={{ bottom: '5%', right: '5%' }}
-        animate={{ x: [0, 15, 0], opacity: [0.6, 0.8, 0.6] }}
-        transition={{ duration: 8, repeat: Infinity, delay: 3 }}
-      />
+      
+      {/* Partículas animadas */}
+      {[...Array(8)].map((_, i) => (
+        <motion.span
+          key={i}
+          className={`absolute w-${1 + Math.floor(i % 4)} h-${1 + Math.floor(i % 4)} bg-primary-${400 + (i * 100) % 300} rounded-full opacity-${20 + (i * 10) % 60} shadow-lg`}
+          style={{
+            top: `${10 + (i * 10) % 80}%`,
+            left: `${5 + (i * 12) % 90}%`,
+          }}
+          animate={{
+            y: [0, (i % 2 === 0 ? -1 : 1) * (20 + i * 5), 0],
+            x: [0, (i % 2 === 0 ? 1 : -1) * (15 + i * 3), 0],
+            opacity: [(0.2 + (i * 0.1) % 0.6), (0.5 + (i * 0.1) % 0.5), (0.2 + (i * 0.1) % 0.6)],
+          }}
+          transition={{
+            duration: 3 + i % 4,
+            repeat: Infinity,
+            delay: i * 0.5,
+          }}
+        />
+      ))}
 
-      <motion.div
-        className="relative z-10 max-w-lg text-center space-y-8"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-      >
-        <h1 className="text-5xl md:text-7xl font-extrabold leading-tight" style={{ color: '#1658ff' }}>
-          Bem-vindo ao{' '}
-          <span style={{ color: '#1658ff' }}>
+      <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 md:space-y-10">
+        {/* Cabeçalho principal com animação */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="space-y-6"
+        >
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-primary-700 via-primary-600 to-primary-500 bg-clip-text text-transparent">
             Redator AI
-          </span>
-        </h1>
-        <p className="text-lg md:text-xl text-gray-600 max-w-md mx-auto">
-          Corrija suas redações do ENEM com inteligência artificial.
-        </p>
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-700 max-w-2xl mx-auto font-medium">
+            Eleve suas redações do ENEM com feedback personalizado <span className="text-primary-600 font-bold">impulsionado por IA</span>
+          </p>
+        </motion.div>
 
-        <div className="flex flex-col sm:flex-row gap-5 justify-center mt-8">
-          <Button
-            asChild
-            className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white text-lg font-medium shadow-lg transition-all duration-300 transform hover:scale-101"
-          >
-            <Link to="/login">Entrar</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="px-8 py-4 border-2 border-blue-500 text-blue-500 hover:bg-blue-400 hover:text-white text-lg font-medium shadow-md transition-all duration-300 transform hover:scale-101"
-          >
-            <Link to="/register">Criar conta</Link>
-          </Button>
+        {/* Seção de recursos com ícones */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3, ease: "easeOut" }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 px-4"
+        >
+          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md border border-primary-100 flex flex-col items-center">
+            <div className="bg-primary-100 p-3 rounded-full mb-4">
+              <FileImage className="h-6 w-6 text-primary-600" />
+            </div>
+            <h3 className="font-bold text-lg text-gray-800">Envio Simples</h3>
+            <p className="text-gray-600 mt-2">Basta fotografar ou fazer upload da sua redação manuscrita</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md border border-primary-100 flex flex-col items-center">
+            <div className="bg-primary-100 p-3 rounded-full mb-4">
+              <CheckCircle className="h-6 w-6 text-primary-600" />
+            </div>
+            <h3 className="font-bold text-lg text-gray-800">Análise Precisa</h3>
+            <p className="text-gray-600 mt-2">Avaliação completa de gramática, coerência e estrutura textual</p>
+          </div>
+          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md border border-primary-100 flex flex-col items-center">
+            <div className="bg-primary-100 p-3 rounded-full mb-4">
+              <MessageSquare className="h-6 w-6 text-primary-600" />
+            </div>
+            <h3 className="font-bold text-lg text-gray-800">Feedback Detalhado</h3>
+            <p className="text-gray-600 mt-2">Receba pontuações, comentários e dicas práticas de melhoria</p>
+          </div>
+        </motion.div>
+
+        {/* CTA com animação */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.6, ease: "easeOut" }}
+          className="space-y-8 mt-8"
+        >
+          <p className="text-lg md:text-xl font-medium text-gray-700">
+          Junte-se aos primeiros <span className="text-primary-600 font-bold">estudantes</span> a transformar suas redações com o poder do Redator AI.
+        </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-primary-600 hover:bg-primary-500 text-white font-medium shadow-lg px-8 py-6 text-lg">
+              <Link to="/register">
+                Começar Gratuitamente
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-medium px-8 py-6 text-lg">
+              <Link to="/login">
+                Acessar Minha Conta
+              </Link>
+            </Button>
+          </div>
+          
+          <p className="text-sm text-gray-500 mt-4">
+            Experimente agora e receba feedback em menos de 60 segundos!
+          </p>
+        </motion.div>
       </div>
-      </motion.div>
     </div>
   );
 };

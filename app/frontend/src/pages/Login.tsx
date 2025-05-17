@@ -99,6 +99,7 @@ const Login: React.FC = () => {
           title: "Login realizado com sucesso!",
           description: "Você será redirecionado para o dashboard.",
           variant: "default",
+          duration: 1500,
         });
         
         // Redirecionar para o dashboard
