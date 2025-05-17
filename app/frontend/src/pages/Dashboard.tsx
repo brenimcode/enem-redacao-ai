@@ -63,9 +63,13 @@ const Dashboard: React.FC = () => {
       });
       if (!response.ok) throw new Error(await response.text());
 
+
       const data = (await response.json()) as { description: string; score: number; competencies: number[] };
+      
+      const totalScore = data.competencies.reduce((sum, value) => sum + value, 0);
+  
       setDescription(data.description);
-      setScore(data.score);
+      setScore(totalScore);
       setCompetencies(data.competencies);
       toast.success('Redação corrigida com sucesso!');
     } catch (err) {

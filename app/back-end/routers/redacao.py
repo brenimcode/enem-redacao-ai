@@ -21,7 +21,5 @@ async def correcao_redacao(
         )
 
     resultado = await fazer_correcao_redacao(file, tema, textos_motivadores)
-    
-
    
     return resultado
