@@ -107,8 +107,8 @@ This architecture ensures **robust OCR**, **context-aware analysis**, and **scal
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd <project-folder>
+git clone https://github.com/brenimcode/enem-redacao-ai
+cd enem-redacao-ai
 ````
 
 ---
