@@ -175,3 +175,4 @@ cython_debug/
 
 app/front-end/
 MMS-05/
+node_modules/
