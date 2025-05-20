@@ -3,3 +3,11 @@ uvicorn[standard]
 python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
+sqlalchemy
+pydantic
+pytesseract
+opencv-python-headless
+pillow
+python-decouple
+langchain
+numpy

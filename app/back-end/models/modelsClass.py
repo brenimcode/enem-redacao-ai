@@ -48,9 +48,10 @@ class UserDB(Base):
 
 
 # Analise de Redacao
-
-
 class RedacaoResponse(BaseModel):
     description: str
-    score: int
     competencies: List[int]
+
+    @property
+    def score(self) -> int:
+        return sum(self.competencies)

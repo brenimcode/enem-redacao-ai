@@ -100,11 +100,8 @@ const Dashboard = () => {
       }
 
       const data: CorrectionData = await response.json();
-      
-      const totalScore = data.competencies.reduce((sum, value) => sum + value, 0);
-
       setDescription(data.description);
-      setScore(totalScore);
+      setScore(data.score);
       setCompetencies(data.competencies);
       
       toast.success("Redação corrigida com sucesso!");

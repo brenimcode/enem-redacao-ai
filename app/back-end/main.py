@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from routers import auth, redacao
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.middleware import SlowAPIMiddleware
 
+
+# Initialize the rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI()
 
@@ -12,6 +18,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add SlowAPI middleware
+app.add_middleware(SlowAPIMiddleware)
+
+# Attach the limiter to the app
+app.state.limiter = limiter
 
 # Inclui as rotas
 app.include_router(auth.router, tags=["auth"])
