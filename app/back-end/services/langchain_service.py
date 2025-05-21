@@ -2,10 +2,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 import os
 from decouple import config
-from models.modelsClass import RedacaoResponse
+from models.modelsClass import LLMResponse
 from langchain.output_parsers import PydanticOutputParser
-from langchain import LLMChain
-from typing import Any, Dict
 from langchain_core.prompts import PromptTemplate
 
 os.environ['GOOGLE_API_KEY'] = config('GOOGLE_API_KEY')
@@ -101,20 +99,20 @@ prompt_template = """
 """
 
 # Cria um parser baseado no seu schema Pydantic
-parser = PydanticOutputParser(pydantic_object=RedacaoResponse)
+parser = PydanticOutputParser(pydantic_object=LLMResponse)
 
 # -------------------------------------------------------------------
-async def analisar_texto(texto,tema,textos_motivadores):
+async def analisar_texto(texto: str, tema: str, textos_motivadores: str) -> LLMResponse:
     """
     Recebe o texto da redação, envia ao Gemini 2.0 Flash e
-    retorna um dict conforme RedacaoResponse.
+    retorna um dict conforme LLMResponse.
     """
 
     # 1️⃣ Configura o LLM
     llm = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
         temperature=0.0,
-        max_tokens=15048,
+        max_tokens=16048,
         timeout=30,
         max_retries=2
     )
@@ -128,3 +126,4 @@ async def analisar_texto(texto,tema,textos_motivadores):
     chain = prompt | llm | parser
 
     return chain.invoke({"tema": tema,"textos_motivadores":textos_motivadores,"texto": texto})
+

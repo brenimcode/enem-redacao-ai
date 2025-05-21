@@ -15,8 +15,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def create_user(db: Session, user: UserCreate) -> UserDB:
     # Verifica se o usuário já existe
-    print("\n -- Chegou aqui no Create User! -- \n")
-
     existing_user = get_user(user.username, db)
     if existing_user:
         raise ValueError("Username already exists")
@@ -30,25 +28,18 @@ def create_user(db: Session, user: UserCreate) -> UserDB:
         full_name=user.full_name,
         hashed_password=hashed
     )
-    print("\n -- Chegou aqui no db_user! -- \n")
+   
 
     # Salva no banco de dados
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    print("\n -- Chegou aqui no retorno do db_user! -- \n")
 
     return db_user
 
 def get_user(username: str, db: Session) -> UserDB | None:
     return db.query(UserDB).filter(UserDB.username == username).first()
 
-"""
-def get_user(username: str):
-    if username in fake_db:
-        user_data = fake_db[username]
-        return UserInDB(**user_data)
-"""
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)

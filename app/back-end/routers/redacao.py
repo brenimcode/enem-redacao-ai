@@ -8,17 +8,16 @@ from PIL import Image
 from io import BytesIO
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from fastapi.responses import PlainTextResponse
-from ..main import app
-from slowapi.errors import RateLimitExceeded
-
-# Configurar o Limiter
-limiter = Limiter(key_func=get_remote_address)
+from fastapi import Request
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
+
+# Add rate-limiting decorator
 @router.post("/redacao", response_model=RedacaoResponse)
-@limiter.limit("5/minute;100/hour;500/day")
+@limiter.limit("1/minute;100/hour;500/day")
 async def correcao_redacao(
+    request: Request,
     file: UploadFile = File(...),
     tema: str = Form(...),
     textos_motivadores: str = Form(...),
@@ -27,7 +26,7 @@ async def correcao_redacao(
     # Verificar tipo de arquivo
     if file.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
         return JSONResponse(
-            status_code=400,
+            status_code=415,  # Unsupported Media Type
             content={"error": "Formato de arquivo não suportado. Use JPG, PNG ou JPEG."}
         )
 
@@ -35,7 +34,7 @@ async def correcao_redacao(
     file_size = await file.read()
     if len(file_size) > 5 * 1024 * 1024:
         return JSONResponse(
-            status_code=400,
+            status_code=413,  # Payload Too Large
             content={"error": "O arquivo excede o tamanho máximo permitido de 5MB."}
         )
 
@@ -45,7 +44,7 @@ async def correcao_redacao(
         image.verify()  # Verifica se é uma imagem válida
     except Exception:
         return JSONResponse(
-            status_code=400,
+            status_code=422,  # Unprocessable Entity
             content={"error": "O arquivo enviado não é uma imagem válida."}
         )
 
@@ -54,9 +53,5 @@ async def correcao_redacao(
 
     # Processar a correção da redação
     resultado = await fazer_correcao_redacao(file, tema, textos_motivadores)
-
+   
     return resultado
-
-@app.exception_handler(RateLimitExceeded)
-async def rate_limit_exceeded_handler(request, exc):
-    return PlainTextResponse("Muitas requisições. Tente novamente mais tarde.", status_code=429)

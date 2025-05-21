@@ -55,63 +55,89 @@ const Dashboard = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!selectedFile) {
-      toast.error("Por favor, selecione uma imagem da redação.");
-      return;
+ const handleSubmit = async () => {
+  if (!selectedFile) {
+    toast.error("Por favor, selecione uma imagem da redação.", { duration: 3000 });
+    return;
+  }
+
+  if (!tema.trim()) {
+    toast.error("Por favor, informe o tema da redação.", { duration: 3000 });
+    return;
+  }
+
+  if (!textosMotivadores.trim()) {
+    toast.error("Por favor, informe os textos motivadores.", { duration: 3000 });
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("tema", tema);
+    formData.append("textos_motivadores", textosMotivadores);
+
+    const token = localStorage.getItem("authToken");
+    const tokenType = localStorage.getItem("tokenType");
+
+    if (!token || !tokenType) {
+      throw new Error("Token de autenticação não encontrado");
     }
 
-    if (!tema.trim()) {
-      toast.error("Por favor, informe o tema da redação.");
-      return;
-    }
+    const response = await fetch("http://localhost:8000/redacao", {
+      method: "POST",
+      headers: {
+        "Authorization": `${tokenType.charAt(0).toUpperCase() + tokenType.slice(1)} ${token}`,
+      },
+      body: formData,
+    });
 
-    if (!textosMotivadores.trim()) {
-      toast.error("Por favor, informe os textos motivadores.");
-      return;
-    }
+    if (!response.ok) {
+      const errorData = await response.json();
+      let errorMessage = "Erro ao processar a solicitação.";
 
-    setLoading(true);
-    
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("tema", tema);
-      formData.append("textos_motivadores", textosMotivadores);
-
-      const token = localStorage.getItem("authToken");
-      const tokenType = localStorage.getItem("tokenType");
-
-      if (!token || !tokenType) {
-        throw new Error("Token de autenticação não encontrado");
+      switch (response.status) {
+        case 401:
+          errorMessage = "Sua sessão expirou. Por favor, faça login novamente.";
+          toast.error(errorMessage, { duration: 3000 });
+          navigate("/"); // Redireciona para a tela inicial
+          return;
+        case 415:
+          errorMessage = "Formato de arquivo não suportado. Use JPG, PNG ou JPEG.";
+          break;
+        case 413:
+          errorMessage = "O arquivo excede o tamanho máximo permitido de 5MB.";
+          break;
+        case 422:
+          errorMessage = "O arquivo enviado não é uma imagem válida.";
+          break;
+        case 429:
+          errorMessage = "Muitas requisições. Tente novamente mais tarde.";
+          break;
+        default:
+          errorMessage = errorData?.error || `Erro ${response.status}: ${response.statusText}`;
       }
 
-      const response = await fetch("http://localhost:8000/redacao", {
-        method: "POST",
-        headers: {
-          "Authorization": `${tokenType.charAt(0).toUpperCase() + tokenType.slice(1)} ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Erro ${response.status}: ${errorText}`);
-      }
-
-      const data: CorrectionData = await response.json();
-      setDescription(data.description);
-      setScore(data.score);
-      setCompetencies(data.competencies);
-      
-      toast.success("Redação corrigida com sucesso!");
-    } catch (err) {
-      console.error("Erro ao enviar redação:", err);
-      toast.error("Erro ao processar redação. Tente novamente.");
-    } finally {
-      setLoading(false);
+      toast.error(errorMessage, { duration: 3000 });
+      return;
     }
-  };
+
+    const data: CorrectionData = await response.json();
+    setDescription(data.description);
+    setScore(data.score);
+    setCompetencies(data.competencies);
+
+    console.log(data);
+    toast.success("Redação corrigida com sucesso!", { duration: 3000 });
+  } catch (err) {
+    console.error("Erro ao enviar redação:", err);
+    toast.error("Erro ao processar redação. Tente novamente.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const resetForm = () => {
     setSelectedFile(null);

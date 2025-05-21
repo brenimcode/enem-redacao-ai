@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from typing import Optional, List
 from db.database import Base
 from sqlalchemy import Column, Integer, String, Boolean
-
+from pydantic import BaseModel, Field, model_validator
+from typing import List
 
 class Token(BaseModel):
     access_token: str
@@ -47,11 +48,19 @@ class UserDB(Base):
     hashed_password = Column(String, nullable=False)
 
 
-# Analise de Redacao
-class RedacaoResponse(BaseModel):
+class LLMResponse(BaseModel):
     description: str
     competencies: List[int]
 
-    @property
-    def score(self) -> int:
-        return sum(self.competencies)
+class RedacaoResponse(BaseModel):
+    description: str
+    competencies: List[int]
+    score: int
+    
+    @classmethod
+    def from_llm_response(cls, llm_response: LLMResponse):
+        return cls(
+            description=llm_response.description,
+            competencies=llm_response.competencies,
+            score=sum(llm_response.competencies)
+        )

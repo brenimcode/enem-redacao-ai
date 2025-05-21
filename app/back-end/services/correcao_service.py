@@ -1,5 +1,6 @@
 from .ocr_service import transcrever_imagem
 from .langchain_service import analisar_texto
+from models.modelsClass import LLMResponse, RedacaoResponse
 
 async def fazer_correcao_redacao(file, tema: str, textos_motivadores: str) -> dict:
     """
@@ -12,10 +13,8 @@ async def fazer_correcao_redacao(file, tema: str, textos_motivadores: str) -> di
     texto = await transcrever_imagem(file)
 
     # 2. Análise com LLM
-    resultado = await analisar_texto(texto, tema, textos_motivadores)
+    llm_result = await analisar_texto(texto, tema, textos_motivadores)
 
-    print("\n\n\n============== ",texto, " ==============")
-    print("\n============== ",tema, " ==============")
-    print("\n============== ",textos_motivadores, " ==============\n\n")
+    redacao_response = RedacaoResponse.from_llm_response(llm_result)
 
-    return resultado
+    return redacao_response
